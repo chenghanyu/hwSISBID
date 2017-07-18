@@ -1,0 +1,86 @@
+---
+title: "Homework1"
+author: "Cheng-Han Yu"
+date: "July 17, 2017"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+library(rmarkdown)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load the data
+```{r loaddata}
+data <- read.csv("../Data/priemelDataReconstruction.csv", header = TRUE)
+```
+
+## Show the data
+```{r showdata}
+head(data)
+```
+
+
+## Plot the physiologic response (OV/BV) as a function of serum level.
+```{r plot_response_serum}
+plot(data$SerumLevelInNgPerMl, data$OV.BV,
+     xlab = "serum", ylab = "physiologic response (OV/BV)")
+```
+
+## Describe the trend
+The higher the serum level is, the lower the physiologic response is. It seems that the physiologic response and serum level are negatively correlated. 
+
+## Logistic Regression
+```{r logisticreg}
+# create a binary variable
+data$OV.BV.bin <- 0
+data$OV.BV.bin[data$OV.BV > 2] <- 1
+# View(data)
+out <- glm(OV.BV.bin ~ SerumLevelInNgPerMl, 
+           family = binomial(link = "logit"), data = data)
+summary(out)
+
+data2 <- data[data$SerumLevelInNgPerMl > 10, ]
+out2 <- glm(OV.BV.bin ~ SerumLevelInNgPerMl, 
+           family = binomial(link = "logit"), data = data2)
+summary(out2)
+```
+
+The answer changes much if we restrict the set of patients to exclude those with serum values far from the target level (e.g., 10 nmol/L or less). I would trust the result that excludes higher serum level.
+
+## Describe the fit in text. State what the coefficient values are inline, rounded to 3 decimal places.
+The estimated coefficients of the first fit are `r round(coef(out)[1], 3)` and `r round(coef(out)[2], 3)`. The estimated coefficients of the second fit are `r round(coef(out2)[1], 3)` and `r round(coef(out2)[2], 3)`.
+
+## Invoke the earlier plot chunk to set things up, and then superimpose the regression fit. 
+```{r plot_addline}
+<<plot_response_serum>>
+abline(h = 2, col = "red")
+```
+
+## Use abline to add a horizontal line at your estimate of the serum level at which 97.5% of the people would have their requirements met.
+
+
+```{r fig_level_intake, eval=FALSE, echo=FALSE}
+iomreview <- read.csv("../Data/iomReview.csv")
+iomreview <- iomreview[complete.cases(iomreview), ]
+plot(iomreview$IOMIntake, iomreview$IOMLevel)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
