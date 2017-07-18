@@ -63,15 +63,11 @@ abline(h = 2, col = "red")
 ## Use abline to add a horizontal line at your estimate of the serum level at which 97.5% of the people would have their requirements met.
 
 
-```{r fig_level_intake, eval=FALSE, echo=FALSE}
+```{r fig_level_intake, eval=TRUE, echo=TRUE}
 iomreview <- read.csv("../Data/iomReview.csv")
 iomreview <- iomreview[complete.cases(iomreview), ]
-plot(iomreview$IOMIntake, iomreview$IOMLevel)
+plot(iomreview$TotalIntake, iomreview$AchievedLevel)
 ```
-
-
-
-
 
 
 
