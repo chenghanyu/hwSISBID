@@ -3,8 +3,8 @@ title: "Homework1"
 author: "Cheng-Han Yu"
 date: "July 17, 2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 ---
 
